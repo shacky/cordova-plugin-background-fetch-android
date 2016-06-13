@@ -1,23 +1,30 @@
-package org.nypr.cordova.wakeupplugin;
+package de.panko.wakeupplugin;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.os.Build;
 import android.util.Log;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class WakeupReceiver extends BroadcastReceiver {
 
     private static final String LOG_TAG = "WakeupReceiver";
 
-    @SuppressLint({"SimpleDateFormat", "NewApi"})
+    private static final Map<String, Semaphore> semaphores = new HashMap<>();
+
+    @TargetApi(Build.VERSION_CODES.CUPCAKE)
     @Override
     public void onReceive(Context context, Intent intent) {
         if (WakeupPlugin.connectionCallbackContext == null) {
@@ -25,7 +32,7 @@ public class WakeupReceiver extends BroadcastReceiver {
             return;
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat sdf = DateFormat.getDateTimeInstance();
         Log.d(LOG_TAG, "wakeuptimer expired at " + sdf.format(new Date().getTime()));
 
         try {
@@ -38,36 +45,39 @@ public class WakeupReceiver extends BroadcastReceiver {
             Class c = Class.forName(className);
 
             Intent i = new Intent(context, c);
-            i.putExtra("wakeup", true);
-            Bundle extrasBundle = intent.getExtras();
-            String extras = null;
-            if (extrasBundle != null && extrasBundle.get("extra") != null) {
-                extras = extrasBundle.get("extra").toString();
-                i.putExtra("extra", extras);
-            }
-
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
 
+            String id = UUID.randomUUID().toString();
+
             JSONObject o = new JSONObject();
             o.put("type", "wakeup");
-            if (extras != null) {
-                o.put("extra", extras);
+            o.put("id", id);
+
+            Semaphore semaphore = new Semaphore(0);
+            semaphores.put(id, semaphore);
+
+            WakeupPlugin.notifyAsync(o);
+
+            boolean released = semaphore.tryAcquire(30, TimeUnit.SECONDS);
+
+            if (!released) {
+                Log.e(LOG_TAG, "timeout occurred while waiting for background task to finish");
             }
-            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, o);
-            pluginResult.setKeepCallback(true);
-            WakeupPlugin.connectionCallbackContext.sendPluginResult(pluginResult);
+
+            semaphores.remove(id);
         } catch (Exception e) {
-            PluginResult pluginResult;
-            JSONObject o = new JSONObject();
-            try {
-                o.put("error", e.getMessage());
-                pluginResult = new PluginResult(PluginResult.Status.ERROR, o);
-            } catch (JSONException e1) {
-                pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION);
-            }
-            pluginResult.setKeepCallback(true);
-            WakeupPlugin.connectionCallbackContext.sendPluginResult(pluginResult);
+            Log.e(LOG_TAG, "exception while trying to wakeup", e);
+        }
+    }
+
+    public static void executionFinished(String id) {
+        Semaphore semaphore = semaphores.get(id);
+
+        if (semaphore != null) {
+            semaphore.release(1);
+        } else {
+            Log.e(LOG_TAG, "no running background task found while signalling execution finished for id " + id);
         }
     }
 }
