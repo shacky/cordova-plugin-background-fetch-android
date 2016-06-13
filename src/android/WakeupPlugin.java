@@ -125,7 +125,7 @@ public class WakeupPlugin extends CordovaPlugin {
         return (this.preferences.getInteger("wakeup", -1) < 0);
     }
 
-    public static void notifyAsync(JSONObject o) {
+    public static void notifyAsync(final JSONObject o) {
         if (selfReference != null && connectionCallbackContext != null) {
             selfReference.cordova.getThreadPool().submit(new Runnable() {
                 @Override

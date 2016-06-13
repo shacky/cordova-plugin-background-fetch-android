@@ -22,7 +22,7 @@ public class WakeupReceiver extends BroadcastReceiver {
 
     private static final String LOG_TAG = "WakeupReceiver";
 
-    private static final Map<String, Semaphore> semaphores = new HashMap<>();
+    private static final Map<String, Semaphore> semaphores = new HashMap<String, Semaphore>();
 
     @TargetApi(Build.VERSION_CODES.CUPCAKE)
     @Override
