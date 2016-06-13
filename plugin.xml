@@ -8,7 +8,7 @@
     <description>Wakeup Plugin</description>
     <license>Apache 2.0</license>
     <keywords>sleep,wakeup,timer</keywords>
-    <repo>git@git.wnyc.net:mobile/cordova/cordova-plugin-wakeuptimer.git</repo>
+    <repo>https://github.com/svenpanko/cordova-plugin-wakeuptimer</repo>
 
     <js-module src="www/wakeup.js" name="Wakeup">
       <clobbers target="wakeuptimer"/>
