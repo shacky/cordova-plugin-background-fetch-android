@@ -18,7 +18,7 @@
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="WakeupPlugin" >
-                <param name="android-package" value="de.panko.WakeupPlugin"/>
+                <param name="android-package" value="de.panko.wakeupplugin.WakeupPlugin"/>
                 <param name="onload" value="true" />
             </feature>
         </config-file>
