@@ -43,7 +43,7 @@ public class WakeupReceiver extends BroadcastReceiver {
             Class c = Class.forName(className);
 
             Intent i = new Intent(context, c);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
 
             Class service = WakeupService.class;
