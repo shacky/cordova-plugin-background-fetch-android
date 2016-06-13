@@ -1,5 +1,6 @@
 package de.panko.wakeupplugin;
 
+import android.WakeupService;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,8 +23,6 @@ public class WakeupReceiver extends BroadcastReceiver {
 
     private static final String LOG_TAG = "WakeupReceiver";
 
-    private static final Map<String, Semaphore> semaphores = new HashMap<String, Semaphore>();
-
     @TargetApi(Build.VERSION_CODES.CUPCAKE)
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -45,39 +44,15 @@ public class WakeupReceiver extends BroadcastReceiver {
             Class c = Class.forName(className);
 
             Intent i = new Intent(context, c);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             context.startActivity(i);
 
-            String id = UUID.randomUUID().toString();
+            Class service = WakeupService.class;
 
-            JSONObject o = new JSONObject();
-            o.put("type", "wakeup");
-            o.put("id", id);
-
-            Semaphore semaphore = new Semaphore(0);
-            semaphores.put(id, semaphore);
-
-            WakeupPlugin.notifyAsync(o);
-
-            boolean released = semaphore.tryAcquire(30, TimeUnit.SECONDS);
-
-            if (!released) {
-                Log.e(LOG_TAG, "timeout occurred while waiting for background task to finish");
-            }
-
-            semaphores.remove(id);
+            Intent serviceIntent = new Intent(context, service);
+            context.startService(serviceIntent);
         } catch (Exception e) {
             Log.e(LOG_TAG, "exception while trying to wakeup", e);
-        }
-    }
-
-    public static void executionFinished(String id) {
-        Semaphore semaphore = semaphores.get(id);
-
-        if (semaphore != null) {
-            semaphore.release(1);
-        } else {
-            Log.e(LOG_TAG, "no running background task found while signalling execution finished for id " + id);
         }
     }
 }

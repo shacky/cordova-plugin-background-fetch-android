@@ -61,7 +61,7 @@ public class WakeupPlugin extends CordovaPlugin {
 
         String id = options.getString("id");
 
-        WakeupReceiver.executionFinished(id);
+        WakeupService.executionFinished(id);
 
         signalSuccess(callbackContext);
 
@@ -130,6 +130,7 @@ public class WakeupPlugin extends CordovaPlugin {
             selfReference.cordova.getThreadPool().submit(new Runnable() {
                 @Override
                 public void run() {
+                    Log.i(LOG_TAG, "running wakeup call");
                     PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, o);
                     pluginResult.setKeepCallback(true);
                     WakeupPlugin.connectionCallbackContext.sendPluginResult(pluginResult);
