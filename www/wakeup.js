@@ -20,14 +20,14 @@ Wakeup.prototype.enable = function (success, error, options) {
     }
 
     function executionFinished(id) {
-        exec(internalSuccess, error, "WakeupPlugin", "executionFinished", {id: id});
+        exec(internalSuccess, error, "WakeupPlugin", "executionFinished", [{id: id}]);
     }
 
-    exec(internalSuccess, error, "WakeupPlugin", "enable", options);
+    exec(internalSuccess, error, "WakeupPlugin", "enable", [options]);
 };
 
 Wakeup.prototype.disable = function (success, error) {
-    exec(success, error, "WakeupPlugin", "disable", {});
+    exec(success, error, "WakeupPlugin", "disable", []);
 };
 
 module.exports = new Wakeup();
