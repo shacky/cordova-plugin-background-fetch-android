@@ -27,6 +27,7 @@ public class WakeupPlugin extends CordovaPlugin {
     @Override
     public void onReset() {
         selfReference = this;
+        connectionCallbackContext = null;
 
         Log.d(LOG_TAG, "Wakeup Plugin onReset");
 
