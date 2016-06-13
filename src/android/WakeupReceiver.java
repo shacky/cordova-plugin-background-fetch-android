@@ -1,6 +1,5 @@
 package de.panko.wakeupplugin;
 
-import android.WakeupService;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
