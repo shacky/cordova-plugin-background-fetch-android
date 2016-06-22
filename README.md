@@ -12,7 +12,7 @@ This plugin is meant to work with Cordova 3.5.0+.
 
 #### Automatic Installation using PhoneGap/Cordova CLI (Android)
         cordova platform update android
-        cordova plugin add https://github.com/wnyc/cordova-plugin-wakeuptimer.git
+        cordova plugin add https://github.com/svenpanko/cordova-plugin-background-fetch-android.git
 
 ## Usage
         tbd
