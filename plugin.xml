@@ -41,5 +41,6 @@
         <source-file src="src/android/WakeupPlugin.java" target-dir="src/de/panko/wakeupplugin/" />
         <source-file src="src/android/WakeupReceiver.java" target-dir="src/de/panko/wakeupplugin/" />
         <source-file src="src/android/WakeupBootReceiver.java" target-dir="src/de/panko/wakeupplugin/" />
+        <source-file src="src/android/WakeupService.java" target-dir="src/de/panko/wakeupplugin/" />
     </platform>
 </plugin>
