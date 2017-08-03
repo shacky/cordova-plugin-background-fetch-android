@@ -1,0 +1,21 @@
+{
+  "name": "cordova-plugin-background-fetch-android",
+  "version": "0.1.0",
+  "description": "Wakeup Plugin",
+  "cordova": {
+    "id": "de.panko.wakeupplugin.WakeupService",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shacky/cordova-plugin-background-fetch-android.git"
+  },
+  "author": "svenpanko",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/shacky/cordova-plugin-background-fetch-android/issues"
+  },
+  "homepage": "https://github.com/shacky/cordova-plugin-background-fetch-android#readme"
+}
